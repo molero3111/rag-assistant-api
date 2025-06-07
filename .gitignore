@@ -1,0 +1,63 @@
+# Ignore Python cache files
+__pycache__/
+# Ignore database files
+# Ignore SQLite database file
+# Ignore Django migrations
+*.sqlite3
+*.db
+# Ignore Python bytecode files
+*.pyc
+# Ignore Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+# Ignore environment variables file
+.env
+# Ignore log files
+*.log
+# Ignore coverage reports
+coverage.xml
+# Ignore static files
+static/
+# Ignore media files
+media/
+# Ignore IDE specific files
+.idea/
+# Ignore macOS specific files
+.DS_Store
+# Ignore Windows specific files
+Thumbs.db
+# Ignore Python egg files
+*.egg
+# Ignore distribution files
+dist/
+# Ignore build files
+build/
+# Ignore pipenv files
+Pipfile.lock
+
+# VS Code settings
+.vscode/
+
+# Python virtual environments
+.env/
+.venv/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Pytest cache
+.pytest_cache/
+
+# Coverage reports
+htmlcov/
+
+# MyPy cache
+.mypy_cache/
+.dmypy.json
+
+# Django local settings
+local_settings.py
+
+# System files
+*.swp
+*.swo

@@ -1,0 +1,7 @@
+# Django and DRF
+Django>=4.2
+ djangorestframework>=3.14
+# For authentication
+ djangorestframework-simplejwt>=5.2
+# For CORS (if you need frontend access)
+ django-cors-headers>=4.3
