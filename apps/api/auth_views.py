@@ -15,6 +15,7 @@ class RegisterView(generics.CreateAPIView):
         refresh = RefreshToken.for_user(user)
         self.tokens = {
             'access': str(refresh.access_token),
+            'refresh': str(refresh),
         }
         login(self.request, user)
 
@@ -40,7 +41,8 @@ class LoginView(APIView):
         if user is not None:
             refresh = RefreshToken.for_user(user)
             return Response({
-                'token': str(refresh.access_token),
+                'access': str(refresh.access_token),
+                'refresh': str(refresh),
             })
         return Response({'detail': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
