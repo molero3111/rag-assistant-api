@@ -1,0 +1,41 @@
+services:
+  api-rag-assistant:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "${HOST_PORT:-8000}:8000"
+    env_file:
+      - .env
+    depends_on:
+      - db-rag-assistant
+      - redis-rag-assistant
+    networks:
+      - rag-assistant-network
+    command: ["./wait-for-it.sh", "db:5432", "--", "./start_api.sh"]
+
+  db-rag-assistant:
+    image: postgres:15
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      POSTGRES_DB: tutor_db
+      POSTGRES_USER: tutor_user
+      POSTGRES_PASSWORD: tutor_pass
+    networks:
+      - rag-assistant-network
+
+  redis-rag-assistant:
+    image: "redis:7.2.1"
+    restart: always
+    networks:
+      - rag-assistant-network
+
+volumes:
+  postgres_data:
+
+networks:
+  rag-assistant-network:
+    driver: bridge
