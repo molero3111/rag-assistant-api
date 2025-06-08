@@ -1,0 +1,1 @@
+txt file to prevent git from ignoring resources/pdfs folder

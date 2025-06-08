@@ -11,19 +11,22 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+from dotenv import load_dotenv
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+load_dotenv()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-#)l-vwlx0(-3g_je&rb8#1zkyh+00h=%gkb(=cr5ut$p%x*-5+'
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "django-insecure-#)l-vwlx0(-3g_je&rb8#1zkyh+00h=%gkb(=cr5ut$p%x*-5+")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv("DJANGO_DEBUG", "True").lower() in ("true", "1", "yes")
 
 ALLOWED_HOSTS = []
 
@@ -138,3 +141,7 @@ REST_FRAMEWORK = {
 }
 
 CORS_ALLOW_ALL_ORIGINS = True
+
+LLM_API_URL = os.getenv("LLM_API_URL", "http://localhost:1234/v1/chat/completions")
+LLM_MODEL = os.getenv("LLM_MODEL", "mistralai/mathstral-7b-v0.1")
+LLM_API_KEY = os.getenv("LLM_API_KEY", "")

@@ -61,3 +61,9 @@ local_settings.py
 # System files
 *.swp
 *.swo
+
+
+# Ignore all PDF files in resources/pdfs
+apps/rag_assistant/management/commands/resources/pdfs/*.pdf
+
+faiss_index/
