@@ -23,5 +23,5 @@ api_base_path = f'{URL_PREFIX}api/'
 urlpatterns = [
     path(f'{URL_PREFIX}admin/', admin.site.urls),
     path(api_base_path, include('apps.api.urls')),
-    path(f'{api_base_path}/rag/', include('apps.rag_assistant.urls')),
+    path(f'{api_base_path}rag/', include('apps.rag_assistant.urls')),
 ]
