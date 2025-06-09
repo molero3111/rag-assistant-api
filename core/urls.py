@@ -16,9 +16,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from core.settings import URL_PREFIX
+
+api_base_path = f'{URL_PREFIX}api/'
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/', include('apps.api.urls')),
-    path('api/rag/', include('apps.rag_assistant.urls')),
+    path(f'{URL_PREFIX}admin/', admin.site.urls),
+    path(api_base_path, include('apps.api.urls')),
+    path(f'{api_base_path}/rag/', include('apps.rag_assistant.urls')),
 ]

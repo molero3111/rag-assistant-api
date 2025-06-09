@@ -30,6 +30,10 @@ DEBUG = os.getenv("DJANGO_DEBUG", "True").lower() in ("true", "1", "yes")
 
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",") if os.getenv("ALLOWED_HOSTS") else []
 
+URL_PREFIX = os.getenv('URL_PREFIX', '')
+if URL_PREFIX:
+    URL_PREFIX = f'{URL_PREFIX}/'
+
 # Application definition
 
 INSTALLED_APPS = [
