@@ -9,7 +9,7 @@ class Command(BaseCommand):
         parser.add_argument(
             '--pdf_dir',
             type=str,
-            default='resources/pdfs/',
+            default='./apps/rag_assistant/management/commands/resources/pdfs/',
             help='Directory containing PDF files to ingest.'
         )
 
