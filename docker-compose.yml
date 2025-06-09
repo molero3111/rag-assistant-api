@@ -3,6 +3,8 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
+    image: rag-assistant-api-image
+    container_name: api-rag-assistant
     restart: always
     ports:
       - "${HOST_PORT:-8000}:8000"
@@ -17,6 +19,7 @@ services:
 
   db-rag-assistant:
     image: postgres:15
+    container_name: db-rag-assistant
     restart: always
     volumes:
       - postgres_data:/var/lib/postgresql/data/
@@ -28,7 +31,8 @@ services:
       - rag-assistant-network
 
   redis-rag-assistant:
-    image: "redis:7.2.1"
+    image: "redis:latest"
+    container_name: redis-rag-assistant
     restart: always
     networks:
       - rag-assistant-network
