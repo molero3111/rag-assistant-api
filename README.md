@@ -45,7 +45,6 @@ LICENSE          # MIT License
 ---
 
 ## Documentation & Resources
-- **[docs/README.md](docs/README.md)** — Extended documentation, API reference, advanced usage, troubleshooting
 - **[notebooks/usage_example.ipynb](notebooks/usage_example.ipynb)** — Example notebook for API usage
 - **[.env.example](.env.example)** — All required environment variables
 - **[CONTRIBUTING.md](CONTRIBUTING.md)** — How to contribute
