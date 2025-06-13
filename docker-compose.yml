@@ -6,8 +6,6 @@ services:
     image: rag-assistant-api-image
     container_name: api-rag-assistant
     restart: always
-    ports:
-      - "${HOST_PORT:-8000}:8000"
     env_file:
       - .env
     depends_on:
@@ -15,7 +13,24 @@ services:
       - redis-rag-assistant
     networks:
       - rag-assistant-network
-    command: ["./wait-for-it.sh", "db:5432", "--", "./start_api.sh"]
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    command: ["./wait-for-it.sh", "db-rag-assistant:5432", "--", "./start_api.sh"]
+
+  webserver-rag-assistant:
+    image: nginx:latest
+    container_name: webserver-rag-assistant
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "${WEBSERVER_HOST_PORT:-8001}:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - api-rag-assistant
+    networks:
+      - rag-assistant-network
 
   db-rag-assistant:
     image: postgres:15
