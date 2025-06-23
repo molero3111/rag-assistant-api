@@ -4,6 +4,7 @@ from langchain_community.vectorstores import FAISS
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
+from core.settings import CHUNK_SIZE
 
 # Module-level variables (loaded once)
 _embeddings = None
@@ -34,7 +35,7 @@ def ingest_all_pdfs(pdf_dir):
         docs = loader.load()
         all_docs.extend(docs)
     # Split into chunks
-    splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
+    splitter = RecursiveCharacterTextSplitter(chunk_size=CHUNK_SIZE, chunk_overlap=50)
     chunks = splitter.split_documents(all_docs)
     # Embed chunks
     embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
