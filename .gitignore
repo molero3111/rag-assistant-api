@@ -65,3 +65,5 @@ local_settings.py
 
 # Ignore all PDF files in resources/pdfs
 apps/rag_assistant/management/commands/resources/pdfs/*.pdf
+
+apps/rag_assistant/prompt.txt

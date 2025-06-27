@@ -5,10 +5,19 @@ import requests
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, permissions
+import os
 
 LLM_API_URL = getattr(settings, "LLM_API_URL", "http://localhost:1234/v1/chat/completions")
 LLM_MODEL = getattr(settings, "LLM_MODEL", "mistralai/mathstral-7b-v0.1")
 LLM_API_KEY = getattr(settings, "LLM_API_KEY", "")
+
+PROMPT_TEMPLATE_PATH = os.path.join(os.path.dirname(__file__), "prompt.txt")
+if not os.path.exists(PROMPT_TEMPLATE_PATH):
+    PROMPT_TEMPLATE_PATH = os.path.join(os.path.dirname(__file__), "prompt_template.txt")
+
+def load_prompt_template():
+    with open(PROMPT_TEMPLATE_PATH, "r", encoding="utf-8") as f:
+        return f.read()
 
 class RagChatView(APIView):
     permission_classes = [permissions.AllowAny]
@@ -17,16 +26,10 @@ class RagChatView(APIView):
         if not user_input:
             return Response({'error': 'Prompt is required.'}, status=status.HTTP_400_BAD_REQUEST)
         context = get_relevant_context(user_input)
+        prompt_template = load_prompt_template()
+        prompt_content = prompt_template.format(context=context, user_input=user_input)
         messages = [
-            {"role": "user", "content": (
-                "You are a helpful tutor for children and teenagers. "
-                "Use the following context from textbooks to help answer the question. "
-                "Let's think step by step.\n\n"
-                "If the context contains relevant formulas, definitions, or examples, use them to solve the problem, even if the exact answer is not present. "
-                "If the context is not helpful in the way that the question is not really about math nor biology, you may answer based on your own knowledge.\n\n"
-                "If the context is not helpful at all, still try to solve their inquiry either with your knowledge or by suggesting another book or resource.\n\n"
-                f"Context:\n{context}\n\nQuestion:\n{user_input}"
-            )}
+            {"role": "user", "content": prompt_content}
         ]
         headers = {"Content-Type": "application/json"}
         if LLM_API_KEY:

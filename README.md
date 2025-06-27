@@ -67,14 +67,15 @@ LICENSE          # MIT License
    - During development, you can use a couple of math and biology books, but any PDF document will suffice. Just make sure to use prompts related to the topic of your PDFs so you can see the context retrieval in action.
 3. Build and start the stack:
    ```bash
-   docker-compose up --build
+   docker compose up --build
    ```
 4. Ingest PDFs (from inside the running container):
    ```bash
-   docker-compose exec api-rag-assistant python manage.py ingest
+   docker compose exec api-rag-assistant python manage.py ingest
    ```
 
 ### 3. LLM Setup (Local)
+**Note:** This step describes setting up a local LLM for use with the project. While LM Studio with the Mistral 7B model is suggested for local deployment, you are free to use any OpenAI-compatible model, whether hosted locally or in the cloud. If you choose to use a cloud-hosted LLM (such as OpenAI's API), simply provide your API key in the `LLM_API_KEY` environment variable.
 - Start LM Studio and run the Mistral 7B model.
 - Ensure `.env` has:
   ```env
@@ -114,6 +115,23 @@ See [.env.example](.env.example) for all required variables (Postgres, Redis, LL
 - The project is ready for extension (e.g., Celery, more LLMs, etc.).
 - Unit tests are yet to be added.
 - The project will be possibly deployed and available at emmanuelcodinghub.com, the hardware requirements are being evaluated.
+
+---
+
+## Prompt Customization
+
+The prompt used by the RAG assistant is fully customizable. By default, a template is provided in `apps/rag_assistant/prompt_template.txt`. To customize the prompt for your deployment:
+
+1. **Copy the template:**
+   ```bash
+   cp apps/rag_assistant/prompt_template.txt apps/rag_assistant/prompt.txt
+   ```
+2. **Edit `prompt.txt`:**
+   Modify `apps/rag_assistant/prompt.txt` as needed. You can change the instructions, tone, or add/remove variables. The placeholders `{context}` and `{user_input}` will be dynamically replaced at runtime with the retrieved context from the vector database and the user's question, respectively.
+3. **Usage:**
+   The system will load the prompt from `prompt.txt` and use it to construct the message sent to the LLM. If `prompt.txt` is missing, it will fall back to the default `prompt_template.txt`.
+
+This allows you to easily adapt the assistant's behavior and style for different audiences or use cases without changing any code.
 
 ---
 
