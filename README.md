@@ -64,7 +64,7 @@ LICENSE          # MIT License
 ### 2. Setup
 1. Copy `.env.example` to `.env` and adjust as needed.
 2. Place your PDFs in `apps/rag_assistant/management/commands/resources/pdfs/`.
-   - During development, you can use a couple of math and biology books, but any PDF document will suffice. Just make sure to use prompts related to the topic of your PDFs so you can see the context retrieval in action.
+   - During development, you can use a couple of sap manuals, but any PDF document will suffice. Just make sure to use prompts related to the topic of your PDFs so you can see the context retrieval in action.
 3. Build and start the stack:
    ```bash
    docker compose up --build
@@ -100,7 +100,7 @@ LICENSE          # MIT License
 ### RAG Chat
 - `POST /api/rag/chat/` — Send prompt, get LLM answer with context
   - Body: `{
-  "prompt": "Please list the prime numbers between 1 and 20, are there any?"}`
+  "prompt": "What is a maintenance order in SAP PM and how is it created?"}`
 
 ---
 
@@ -153,7 +153,7 @@ If you use this project in your research or product, please cite it as follows:
 ```
 @misc{tutorassistant2025,
   author = {Your Name},
-  title = {Tutor Assistant API: A Modular RAG Assistant with Django, DRF, and LangChain},
+  title = {SAP Assistant API: A Modular RAG Assistant with Django, DRF, and LangChain},
   year = {2025},
   url = {https://github.com/molero3111/tutor-assistant}
 }
