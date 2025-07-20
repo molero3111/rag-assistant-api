@@ -69,3 +69,4 @@ apps/rag_assistant/management/commands/resources/pdfs/*.pdf
 apps/rag_assistant/prompt.txt
 
 faiss_index/
+staticfiles/

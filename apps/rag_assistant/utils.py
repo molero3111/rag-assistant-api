@@ -6,6 +6,10 @@ from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from core.settings import CHUNK_SIZE
 
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+FAISS_INDEX_PATH = os.path.join(PROJECT_ROOT, "faiss_index")
+
+
 # Module-level variables (loaded once)
 _embeddings = None
 _vectorstore = None
@@ -20,7 +24,7 @@ def get_vectorstore():
     global _vectorstore
     if _vectorstore is None:
         embeddings = get_embeddings()
-        _vectorstore = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
+        _vectorstore = FAISS.load_local(FAISS_INDEX_PATH, embeddings, allow_dangerous_deserialization=True)
     return _vectorstore
 
 def get_relevant_context(query, k=4):
@@ -41,4 +45,4 @@ def ingest_all_pdfs(pdf_dir):
     embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
     # Store in FAISS
     vectorstore = FAISS.from_documents(chunks, embeddings)
-    vectorstore.save_local("faiss_index")
+    vectorstore.save_local(FAISS_INDEX_PATH)

@@ -100,7 +100,7 @@ LICENSE          # MIT License
 ### RAG Chat
 - `POST /api/rag/chat/` — Send prompt, get LLM answer with context
   - Body: `{
-  "prompt": "Please list the prime numbers between 1 and 20, are there any?"}`
+  "prompt": "I'm stuck on this equation: 3(2x - 4) = 5x + 6. Can you help me solve for x and explain the steps?"}`
 
 ---
 

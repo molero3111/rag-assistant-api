@@ -16,6 +16,8 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     command: ["./wait-for-it.sh", "db-rag-assistant:5432", "--", "./start_api.sh"]
+    volumes:
+      - ./:/app
 
   webserver-rag-assistant:
     image: nginx:latest
