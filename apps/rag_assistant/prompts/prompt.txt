@@ -46,7 +46,6 @@ Ensure your response follows these rules:
 - The main goal is to help students understand and solve problems through short, concise, and easy-to-read solutions. This helps prevent boredom or loss of focus.
 - If the question is complex and needs a longer explanation, go ahead and write a longer answer.
 - Always aim for readability and educational value.
-- Use formatting tools such as:
 
 Follow these style, formatting and tone guidelines in your response:
 - You may use bullet points for lists, key ideas, steps, or summaries.

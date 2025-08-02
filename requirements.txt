@@ -37,6 +37,7 @@ langchain-community==0.3.24
 langchain-core==0.3.64
 langchain-huggingface==0.2.0
 langchain-text-splitters==0.3.8
+langchain-deepseek
 langsmith==0.3.45
 MarkupSafe==3.0.2
 marshmallow==3.26.1

@@ -97,10 +97,35 @@ LICENSE          # MIT License
 ### Profile
 - `GET /api/profile/` — Get user details (JWT required)
 
-### RAG Chat
+
+### RAG Chat & Animals Endpoints
 - `POST /api/rag/chat/` — Send prompt, get LLM answer with context
   - Body: `{
-  "prompt": "I'm stuck on this equation: 3(2x - 4) = 5x + 6. Can you help me solve for x and explain the steps?"}`
+    "prompt": "I'm stuck on this equation: 3(2x - 4) = 5x + 6. Can you help me solve for x and explain the steps?"
+  }`
+
+- `POST /api/rag/animals-list/` — Get a list of animals (structured output, not model-native)
+  - Body: `{
+    "prompt": "List 5 animals that are herbivores and green in color."
+  }`
+
+- `POST /api/rag/animals/` — Get a list of animals (model-native structured output, requires DeepSeek API key)
+  - Body: `{
+    "prompt": "List 5 animals that are herbivores and green in color."
+  }`
+  - Response: `{
+    "animals": [
+      {"name": "Green Iguana", "species": "Iguana iguana", "age": 5, "habitat": "Tropical rainforests"},
+      ...
+    ]
+  }`
+
+**Note:** The model-native structured output endpoint (`/api/rag/animals/`) requires a valid DeepSeek API key. Update your `.env` file:
+```env
+LLM_API_URL=https://api.deepseek.com/v1/chat/completions
+LLM_MODEL=deepseek-chat
+LLM_API_KEY=your_deepseek_api_key_here
+```
 
 ---
 
