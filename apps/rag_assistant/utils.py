@@ -12,6 +12,8 @@ from langchain_core.prompts import PromptTemplate
 from .models import AnimalList
 from langchain_deepseek import ChatDeepSeek
 from langchain_core.prompts import ChatPromptTemplate
+import logging
+logger = logging.getLogger(__name__)
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 FAISS_INDEX_PATH = os.path.join(PROJECT_ROOT, "faiss_index")
@@ -101,6 +103,7 @@ def handle_model_native_structured_output(user_input, prompt_path):
 
 # Handler for chained facts and elaboration
 def handle_facts_and_explanations(user_input):
+    logger.info("Generating facts and explanations for topic: %s", user_input)
     context = get_relevant_context(user_input)
     # First prompt: generate 3 short facts
     facts_prompt = PromptTemplate(
@@ -124,7 +127,9 @@ def handle_facts_and_explanations(user_input):
     # Full chain: facts -> explanation
     full_chain = facts_chain | create_explanation_input | explanation_chain
     try:
+        logger.info("Facts chain input: topic=%s, context=%s", user_input, context)
         explanation_result = full_chain.invoke({"topic": user_input, "context": context})
         return {"result": explanation_result}
     except Exception as e:
+        logger.error("Error occurred: %s", e)
         return {"error": f"Error communicating with the model: {e}"}
