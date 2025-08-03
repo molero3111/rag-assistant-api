@@ -98,7 +98,7 @@ LICENSE          # MIT License
 - `GET /api/profile/` — Get user details (JWT required)
 
 
-### RAG Chat & Animals Endpoints
+-### RAG Chat, Animals & Facts Endpoints
 - `POST /api/rag/chat/` — Send prompt, get LLM answer with context
   - Body: `{
     "prompt": "I'm stuck on this equation: 3(2x - 4) = 5x + 6. Can you help me solve for x and explain the steps?"
@@ -120,7 +120,15 @@ LICENSE          # MIT License
     ]
   }`
 
-**Note:** The model-native structured output endpoint (`/api/rag/animals/`) requires a valid DeepSeek API key. Update your `.env` file:
+- `POST /api/rag/facts/` — Generate three important facts about a topic and get explanations for each (requires DeepSeek API key)
+  - Body: `{
+    "topic": "proteins"
+  }`
+  - Response: `{
+    "result": "1. Proteins are key for building muscle.\nExplanation: Proteins provide the amino acids necessary for muscle growth and repair.\n2. ..."
+  }`
+
+**Note:** The model-native structured output endpoint (`/api/rag/animals/`) and The facts endpoint (`/api/rag/facts/`) require a valid DeepSeek API key. Update your `.env` file:
 ```env
 LLM_API_URL=https://api.deepseek.com/v1/chat/completions
 LLM_MODEL=deepseek-chat
