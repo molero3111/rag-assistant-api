@@ -1,44 +1,63 @@
 import os
 import requests
-from django.conf import settings
 from langchain_community.vectorstores import FAISS
+from langchain_postgres import PGEngine, PGVectorStore
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from core.settings import CHUNK_SIZE
 from langchain_core.output_parsers import StrOutputParser
 from langchain_deepseek import ChatDeepSeek
 from langchain_core.prompts import PromptTemplate
-from .models import AnimalList
 from langchain_deepseek import ChatDeepSeek
 from langchain_core.prompts import ChatPromptTemplate
+
+from core.settings import (CHUNK_SIZE, VECTORSTORE_BACKEND, PGVECTOR_COLLECTION_NAME,
+DB_CONNECTION_URL, EMBEDDING_MODEL, LLM_API_URL, LLM_MODEL, LLM_API_KEY)
+from .models import AnimalList
 import logging
 logger = logging.getLogger(__name__)
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 FAISS_INDEX_PATH = os.path.join(PROJECT_ROOT, "faiss_index")
-LLM_API_URL = getattr(settings, "LLM_API_URL", "http://localhost:1234/v1/chat/completions")
-LLM_MODEL = getattr(settings, "LLM_MODEL", "TheBloke/deepseek-llm-7B-chat-GGUF")
-LLM_API_KEY = getattr(settings, "LLM_API_KEY", "")
 PROMPT_FOLDER = os.path.join(os.path.dirname(__file__), "prompts")
-
 
 # Module-level variables (loaded once)
 _embeddings = None
 _vectorstore = None
+_pgvectorstore = None
+_pgengine = None
 
 def get_embeddings():
     global _embeddings
     if _embeddings is None:
-        _embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+        _embeddings = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL)
     return _embeddings
 
 def get_vectorstore():
-    global _vectorstore
-    if _vectorstore is None:
-        embeddings = get_embeddings()
-        _vectorstore = FAISS.load_local(FAISS_INDEX_PATH, embeddings, allow_dangerous_deserialization=True)
-    return _vectorstore
+    global _vectorstore, _pgvectorstore
+    embeddings = get_embeddings()
+    if VECTORSTORE_BACKEND == "faiss":
+        print("[RAG] Using FAISS vectorstore backend.")
+        if _vectorstore is None:
+            _vectorstore = FAISS.load_local(FAISS_INDEX_PATH, embeddings, allow_dangerous_deserialization=True)
+        return _vectorstore
+    elif VECTORSTORE_BACKEND == "pgvector":
+        print(f"[RAG] Using pgvector backend (PGVectorStore). Collection: {PGVECTOR_COLLECTION_NAME}")
+        global _pgengine
+        if not DB_CONNECTION_URL:
+            raise ValueError("DB_CONNECTION_URL must be set in settings for pgvector backend.")
+        if _pgengine is None:
+            _pgengine = PGEngine.from_connection_string(url=DB_CONNECTION_URL)
+        if _pgvectorstore is None:
+            _pgvectorstore = PGVectorStore.create_sync(
+                engine=_pgengine,
+                table_name=PGVECTOR_COLLECTION_NAME,
+                embedding_service=embeddings,
+            )
+        return _pgvectorstore
+    else:
+        print(f"[RAG] Unknown VECTORSTORE_BACKEND: {VECTORSTORE_BACKEND}")
+        raise ValueError(f"Unknown VECTORSTORE_BACKEND: {VECTORSTORE_BACKEND}")
 
 def get_relevant_context(query, k=4):
     vectorstore = get_vectorstore()

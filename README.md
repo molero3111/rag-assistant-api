@@ -74,7 +74,37 @@ LICENSE          # MIT License
    docker compose exec api-rag-assistant python manage.py ingest
    ```
 
-### 3. LLM Setup (Local)
+### 3. Vectorstore & Embedding Model Setup
+
+You can choose which vectorstore backend to use for context retrieval: FAISS (local, fast, in-memory) or pgvector (Postgres-backed, scalable, persistent).
+
+#### Vectorstore Selection
+- Set the `VECTORSTORE_BACKEND` environment variable in your `.env` file:
+  - `VECTORSTORE_BACKEND=faiss` for FAISS (local, default for quick dev)
+  - `VECTORSTORE_BACKEND=pgvector` for pgvector (recommended for production)
+
+#### Embedding Model Configuration
+- Set the `EMBEDDING_MODEL` environment variable to control which HuggingFace embedding model is used for chunking and retrieval. Example:
+  - `EMBEDDING_MODEL=sentence-transformers/all-MiniLM-L6-v2`
+- Set the `VECTOR_SIZE` variable to match the dimensionality of your embedding model (e.g., 384 for all-MiniLM-L6-v2).
+
+#### Example `.env` settings:
+```env
+VECTORSTORE_BACKEND=pgvector
+EMBEDDING_MODEL=sentence-transformers/all-MiniLM-L6-v2
+VECTOR_SIZE=384
+PGVECTOR_COLLECTION_NAME=rag_docs
+CHUNK_SIZE=10000
+```
+
+#### Ingestion
+- For FAISS: `python manage.py ingest`
+- For pgvector: `python manage.py ingest_pgvector`
+
+The startup script (`start_api.sh`) will automatically run the correct ingestion command based on your `VECTORSTORE_BACKEND` setting.
+
+---
+### 4. LLM Setup (Local)
 **Note:** This step describes setting up a local LLM for use with the project. While LM Studio with the Mistral 7B model is suggested for local deployment, you are free to use any OpenAI-compatible model, whether hosted locally or in the cloud. If you choose to use a cloud-hosted LLM (such as OpenAI's API), simply provide your API key in the `LLM_API_KEY` environment variable.
 - Start LM Studio and run the Mistral 7B model.
 - Ensure `.env` has:
@@ -144,7 +174,7 @@ See [.env.example](.env.example) for all required variables (Postgres, Redis, LL
 
 ## Notes
 - All tokens are JWT (access/refresh). Store them securely in your client.
-- The RAG assistant uses FAISS and LangChain for context retrieval from your ingested PDFs.
+- The RAG assistant uses FAISS or pgvector (configurable) and LangChain for context retrieval from your ingested PDFs.
 - The project is ready for extension (e.g., Celery, more LLMs, etc.).
 - Unit tests are yet to be added.
 - The project will be possibly deployed and available at emmanuelcodinghub.com, the hardware requirements are being evaluated.
