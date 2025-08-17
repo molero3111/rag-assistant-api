@@ -71,14 +71,21 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+DB_NAME = os.getenv('POSTGRES_DB', 'tutor_db')
+DB_USER = os.getenv('POSTGRES_USER', 'tutor_user')
+DB_PASSWORD = os.getenv('POSTGRES_PASSWORD', 'tutor_pass')
+DB_HOST = os.getenv('POSTGRES_HOST', 'db')
+DB_PORT = os.getenv('POSTGRES_PORT', '5432')
+DB_CONNECTION_URL = f"postgresql+asyncpg://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('POSTGRES_DB', 'tutor_db'),
-        'USER': os.getenv('POSTGRES_USER', 'tutor_user'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'tutor_pass'),
-        'HOST': os.getenv('POSTGRES_HOST', 'db'),
-        'PORT': os.getenv('POSTGRES_PORT', '5432'),
+        'NAME': DB_NAME,
+        'USER': DB_USER,
+        'PASSWORD': DB_PASSWORD,
+        'HOST': DB_HOST,
+        'PORT': DB_PORT,
     }
 }
 
@@ -146,13 +153,6 @@ REST_FRAMEWORK = {
 
 CORS_ALLOW_ALL_ORIGINS = True
 
-LLM_API_URL = os.getenv("LLM_API_URL", "http://localhost:1234/v1/chat/completions")
-LLM_MODEL = os.getenv("LLM_MODEL", "mistralai/mathstral-7b-v0.1")
-LLM_API_KEY = os.getenv("LLM_API_KEY", "")
-
-# CHUNK SIZE for text splitting
-CHUNK_SIZE = int(os.getenv("CHUNK_SIZE", 10000))
-
 # Logging configuration
 LOGGING = {
     'version': 1,
@@ -195,3 +195,15 @@ LOGGING = {
         },
     },
 }
+
+# Vector settings
+VECTORSTORE_BACKEND = os.getenv("VECTORSTORE_BACKEND", "pgvector")
+EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "sentence-transformers/all-MiniLM-L6-v2")
+VECTOR_SIZE = int(os.getenv("VECTOR_SIZE", 364))
+PGVECTOR_COLLECTION_NAME = os.getenv("PGVECTOR_COLLECTION_NAME", "rag_docs")
+CHUNK_SIZE = int(os.getenv("CHUNK_SIZE", 10000)) # CHUNK SIZE for text splitting
+
+# LLM settings
+LLM_API_URL = os.getenv("LLM_API_URL", "http://localhost:1234/v1/chat/completions")
+LLM_MODEL = os.getenv("LLM_MODEL", "deepseek-chat")
+LLM_API_KEY = os.getenv("LLM_API_KEY", "")

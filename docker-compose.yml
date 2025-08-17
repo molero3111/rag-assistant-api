@@ -35,7 +35,10 @@ services:
       - rag-assistant-network
 
   db-rag-assistant:
-    image: postgres:15
+    build:
+      context: .
+      dockerfile: Dockerfile.pgvector
+    image: postgres-pgvector:15
     container_name: db-rag-assistant
     restart: always
     volumes:
