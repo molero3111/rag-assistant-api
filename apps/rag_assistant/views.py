@@ -2,7 +2,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, permissions
 import os
-from .utils import handle_rag_chat, handle_model_native_structured_output, handle_facts_and_explanations
+from .utils import (handle_rag_chat, handle_model_native_structured_output, 
+                    handle_facts_and_explanations, handle_rag_chat_with_groq)
 
 PROMPT_FOLDER = os.path.join(os.path.dirname(__file__), "prompts")
 
@@ -50,3 +51,13 @@ class RagFactsAndExplanationsView(APIView):
         response = handle_facts_and_explanations(user_input)
         status_code = status.HTTP_200_OK if not response.get('error', None) else status.HTTP_500_INTERNAL_SERVER_ERROR
         return Response(response, status=status_code)
+
+# Groq-based chat
+class GroqRagChatView(APIView):
+    permission_classes = [permissions.AllowAny]
+    def post(self, request):
+        user_input = request.data.get('prompt')
+        prompt_path = os.path.join(PROMPT_FOLDER, "custom_prompt.txt")
+        if not os.path.exists(prompt_path):
+            prompt_path = os.path.join(PROMPT_FOLDER, "prompt.txt")
+        return Response(handle_rag_chat_with_groq(user_input))

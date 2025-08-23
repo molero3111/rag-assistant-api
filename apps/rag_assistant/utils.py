@@ -7,12 +7,15 @@ from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_core.output_parsers import StrOutputParser
 from langchain_deepseek import ChatDeepSeek
-from langchain_core.prompts import PromptTemplate
+from langchain_core.prompts import PromptTemplate, ChatPromptTemplate
 from langchain_deepseek import ChatDeepSeek
-from langchain_core.prompts import ChatPromptTemplate
+from langchain_groq import ChatGroq
+from langchain_core.messages import HumanMessage, SystemMessage
+import yaml
+
 
 from core.settings import (CHUNK_SIZE, VECTORSTORE_BACKEND, PGVECTOR_COLLECTION_NAME,
-DB_CONNECTION_URL, EMBEDDING_MODEL, LLM_API_URL, LLM_MODEL, LLM_API_KEY)
+DB_CONNECTION_URL, EMBEDDING_MODEL, LLM_API_URL, LLM_MODEL, LLM_API_KEY, GROQ_LLM_MODEL, GROQ_LLM_API_KEY)
 from .models import AnimalList
 import logging
 logger = logging.getLogger(__name__)
@@ -26,6 +29,7 @@ _embeddings = None
 _vectorstore = None
 _pgvectorstore = None
 _pgengine = None
+
 
 def get_embeddings():
     global _embeddings
@@ -152,3 +156,36 @@ def handle_facts_and_explanations(user_input):
     except Exception as e:
         logger.error("Error occurred: %s", e)
         return {"error": f"Error communicating with the model: {e}"}
+    
+def handle_rag_chat_with_groq(user_input):
+    if not user_input:
+        return {"error": "Prompt is required."}
+    # context = get_relevant_context(user_input)
+    # with open(prompt_path, "r", encoding="utf-8") as f:
+    #     prompt_template = f.read()
+    # prompt_content = prompt_template.format(context=context, user_input=user_input)
+    # Basic question
+    messages = [
+        SystemMessage(content="You are a helpful AI assistant."),
+        HumanMessage(content=user_input)
+    ]
+    llm = ChatGroq(
+        model=GROQ_LLM_MODEL,
+        temperature=0.7,
+        api_key=GROQ_LLM_API_KEY
+    )
+
+    response = llm.invoke(messages)
+    return response.content
+
+
+def read_txt_file(file_path):
+    """
+    Reads the content of a text file and returns it as a string.
+    If the file is not found, returns None.
+    """
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            return f.read()
+    except FileNotFoundError:
+        return None

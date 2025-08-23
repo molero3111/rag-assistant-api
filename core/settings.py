@@ -207,3 +207,7 @@ CHUNK_SIZE = int(os.getenv("CHUNK_SIZE", 10000)) # CHUNK SIZE for text splitting
 LLM_API_URL = os.getenv("LLM_API_URL", "http://localhost:1234/v1/chat/completions")
 LLM_MODEL = os.getenv("LLM_MODEL", "deepseek-chat")
 LLM_API_KEY = os.getenv("LLM_API_KEY", "")
+
+# GROQ LLM settings
+GROQ_LLM_MODEL = os.getenv("GROQ_LLM_MODEL", "llama-3.1-8b-instant")
+GROQ_LLM_API_KEY = os.getenv("GROQ_LLM_API_KEY")
