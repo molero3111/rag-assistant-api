@@ -1,0 +1,12 @@
+[
+    "Tell me about VAE applications.",
+    "What about data compression specifically?",
+    "Can you explain the encoder-decoder architecture?",
+    "How is it used for missing data imputation?",
+    "How do VAEs perform noise reduction?",
+    "What is the role of the latent space in VAEs?",
+    "How do VAEs generate synthetic data?",
+    "Explain the Evidence Lower Bound (ELBO) in VAE training.",
+    "How do VAEs detect anomalies in data?",
+    "What insights were gained from the MNIST case study?"
+]

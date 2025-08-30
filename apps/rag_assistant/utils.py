@@ -1,5 +1,7 @@
 import os
 import requests
+from json import load, JSONDecodeError
+from random import sample
 from langchain_community.vectorstores import FAISS
 from langchain_postgres import PGEngine, PGVectorStore
 from langchain_huggingface import HuggingFaceEmbeddings
@@ -11,7 +13,6 @@ from langchain_core.prompts import PromptTemplate, ChatPromptTemplate
 from langchain_deepseek import ChatDeepSeek
 from langchain_groq import ChatGroq
 from langchain_core.messages import HumanMessage, SystemMessage
-import yaml
 
 
 from core.settings import (CHUNK_SIZE, VECTORSTORE_BACKEND, PGVECTOR_COLLECTION_NAME,
@@ -179,6 +180,7 @@ def handle_rag_chat_with_groq(user_input):
     return response.content
 
 
+
 def read_txt_file(file_path):
     """
     Reads the content of a text file and returns it as a string.
@@ -189,3 +191,25 @@ def read_txt_file(file_path):
             return f.read()
     except FileNotFoundError:
         return None
+
+def load_json_file(file_path):
+    """
+    Loads and returns the contents of a JSON file as a Python object.
+    Returns None if the file is not found or cannot be parsed.
+    """
+    
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            return load(f)
+    except (FileNotFoundError, JSONDecodeError):
+        return None
+
+def get_random_turns(n=4, turns=None):
+    """
+    Returns a random sample of turns from the provided list.
+    """
+    if turns is None:
+        turns = load_json_file(os.path.join(os.path.dirname(__file__), "management/commands/resources/turns.json"))
+        if not turns:
+            raise RuntimeError("Failed to load turns")
+    return sample(turns, n) if turns else None
