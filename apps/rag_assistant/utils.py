@@ -64,12 +64,12 @@ def get_vectorstore():
         print(f"[RAG] Unknown VECTORSTORE_BACKEND: {VECTORSTORE_BACKEND}")
         raise ValueError(f"Unknown VECTORSTORE_BACKEND: {VECTORSTORE_BACKEND}")
 
-def get_relevant_context(query, k=4):
+def get_relevant_context(query: str, k: int = 4):
     vectorstore = get_vectorstore()
     docs = vectorstore.similarity_search(query, k=k)
     return "\n\n".join([doc.page_content for doc in docs])
 
-def ingest_all_pdfs(pdf_dir):
+def ingest_all_pdfs(pdf_dir: str):
     all_docs = []
     pdf_files = [f for f in os.listdir(pdf_dir) if f.lower().endswith('.pdf')]
     for pdf_file in pdf_files:
@@ -84,8 +84,8 @@ def ingest_all_pdfs(pdf_dir):
     # Store in FAISS
     vectorstore = FAISS.from_documents(chunks, embeddings)
     vectorstore.save_local(FAISS_INDEX_PATH)
-    
-def handle_rag_chat(user_input, prompt_path):
+
+def handle_rag_chat(user_input: str, prompt_path: str):
     if not user_input:
         return {"error": "Prompt is required."}
     context = get_relevant_context(user_input)
@@ -110,7 +110,7 @@ def handle_rag_chat(user_input, prompt_path):
     except Exception as e:
         return {"error": f"Error communicating with the model: {e}"}
 
-def handle_model_native_structured_output(user_input, prompt_path):
+def handle_model_native_structured_output(user_input: str, prompt_path: str):
     if not user_input:
         return {"error": "Prompt is required."}
     context = get_relevant_context(user_input)
@@ -157,8 +157,8 @@ def handle_facts_and_explanations(user_input):
     except Exception as e:
         logger.error("Error occurred: %s", e)
         return {"error": f"Error communicating with the model: {e}"}
-    
-def handle_rag_chat_with_groq(user_input):
+
+def handle_rag_chat_with_groq(user_input: str):
     if not user_input:
         return {"error": "Prompt is required."}
     # context = get_relevant_context(user_input)
@@ -181,7 +181,7 @@ def handle_rag_chat_with_groq(user_input):
 
 
 
-def read_txt_file(file_path):
+def read_txt_file(file_path: str):
     """
     Reads the content of a text file and returns it as a string.
     If the file is not found, returns None.
@@ -192,7 +192,7 @@ def read_txt_file(file_path):
     except FileNotFoundError:
         return None
 
-def load_json_file(file_path):
+def load_json_file(file_path: str):
     """
     Loads and returns the contents of a JSON file as a Python object.
     Returns None if the file is not found or cannot be parsed.
@@ -204,7 +204,7 @@ def load_json_file(file_path):
     except (FileNotFoundError, JSONDecodeError):
         return None
 
-def get_random_turns(n=4, turns=None):
+def get_random_turns(n: int = 4, turns: list[str] = None):
     """
     Returns a random sample of turns from the provided list.
     """
